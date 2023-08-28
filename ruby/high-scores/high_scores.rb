@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
 class HighScores
+  attr_reader :scores
+
   def initialize(input_scores)
     @scores = input_scores
-  end
-
-  def scores
-    @scores
   end
 
   def latest
