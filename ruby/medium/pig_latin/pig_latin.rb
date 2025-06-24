@@ -7,21 +7,36 @@ class PigLatin
   end
 
   def self.rules
-    vowels = %w[a e i o u]
-    rule_1 = %w[xr yt]
-
-    # start with vocal or "xr" or "yt"
-    if vowels.any? { |v| @word.start_with?(v) } || rule_1.any? { |r| @word.start_with?(r) }
+    if starts_with_vowel_or_special?
       rule1
-    elsif vowels.none? { |v| @word.start_with?(v) } && @word.include?('qu')
+    elsif starts_with_consonant_and_contains_qu?
       rule3
-    elsif vowels.none? { |v| @word.start_with?(v) } && @word.include?('y')
+    elsif starts_with_consonant_and_contains_y?
       rule4
-    elsif vowels.none? { |v| @word.start_with?(v) }
+    else
       rule2
     end
   end
 
+  def self.starts_with_vowel_or_special?
+    vowels = %w[a e i o u]
+    special_prefixes = %w[xr yt]
+    vowels.any? { |v| @word.start_with?(v) } || special_prefixes.any? { |r| @word.start_with?(r) }
+  end
+
+  def self.starts_with_consonant_and_contains_qu?
+    !starts_with_vowel? && @word.include?('qu')
+  end
+
+  def self.starts_with_consonant_and_contains_y?
+    !starts_with_vowel? && @word.include?('y')
+  end
+
+  def self.starts_with_vowel?
+    %w[a e i o u].any? { |v| @word.start_with?(v) }
+  end
+
+  # Rules
   def self.rule1
     @word = "#{@word}ay"
   end
