@@ -2,62 +2,58 @@
 
 class PigLatin
   def self.translate(word)
-    @word = word
-    rules
+    apply_rules(word)
   end
 
-  def self.rules
-    if starts_with_vowel_or_special?
-      rule1
-    elsif starts_with_consonant_and_contains_qu?
-      rule3
-    elsif starts_with_consonant_and_contains_y?
-      rule4
+  def self.apply_rules(word)
+    if starts_with_vowel_or_special?(word)
+      rule1(word)
+    elsif starts_with_consonant_and_contains_qu?(word)
+      rule3(word)
+    elsif starts_with_consonant_and_contains_y?(word)
+      rule4(word)
     else
-      rule2
+      rule2(word)
     end
   end
 
-  def self.starts_with_vowel_or_special?
+  def self.starts_with_vowel_or_special?(word)
     vowels = %w[a e i o u]
     special_prefixes = %w[xr yt]
-    vowels.any? { |v| @word.start_with?(v) } || special_prefixes.any? { |r| @word.start_with?(r) }
+    vowels.any? { |v| word.start_with?(v) } || special_prefixes.any? { |r| word.start_with?(r) }
   end
 
-  def self.starts_with_consonant_and_contains_qu?
-    !starts_with_vowel? && @word.include?('qu')
+  def self.starts_with_consonant_and_contains_qu?(word)
+    !starts_with_vowel?(word) && word.include?('qu')
   end
 
-  def self.starts_with_consonant_and_contains_y?
-    !starts_with_vowel? && @word.include?('y')
+  def self.starts_with_consonant_and_contains_y?(word)
+    !starts_with_vowel?(word) && word.include?('y')
   end
 
-  def self.starts_with_vowel?
-    %w[a e i o u].any? { |v| @word.start_with?(v) }
+  def self.starts_with_vowel?(word)
+    %w[a e i o u].any? { |v| word.start_with?(v) }
   end
 
-  # Rules
-  def self.rule1
-    @word = "#{@word}ay"
+  def self.rule1(word)
+    "#{word}ay"
   end
 
-  def self.rule2
+  def self.rule2(word)
     vowels = %w[a e i o u]
+    first_vowel = word.chars.find { |char| vowels.include?(char) }
 
-    index_of_first_vowel = @word.chars.index { |char| vowels.include?(char) }
-    consonant_cluster = @word[0...index_of_first_vowel]
-    rest_of_word = @word[index_of_first_vowel..]
-
-    @word = "#{rest_of_word}#{consonant_cluster}ay"
+    before_vowel, vowel, after_vowel = word.partition(first_vowel)
+    "#{vowel}#{after_vowel}#{before_vowel}ay"
   end
 
-  def self.rule3
-    array = @word.split('qu')
-    @word = "#{array[1]}#{array[0]}quay"
+  def self.rule3(word)
+    before_qu, qu, after_qu = word.partition('qu')
+    "#{after_qu}#{before_qu}#{qu}ay"
   end
 
-  def self.rule4
-    array = @word.split('y')
-    @word = "y#{array[1]}#{array[0]}ay"
+  def self.rule4(word)
+    before_y, y, after_y = word.partition('y')
+    "#{y}#{after_y}#{before_y}ay"
   end
 end
